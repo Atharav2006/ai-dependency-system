@@ -2,6 +2,9 @@
 
 A world-class behavioural analysis platform that monitors user interaction dynamics with AI agents. It calculates dependency, understanding, and capability scores through strategic session oversight.
 
+## 🌐 Live Demo
+**Frontend**: [https://atharav2006.github.io/ai-dependency-system/](https://atharav2006.github.io/ai-dependency-system/)
+
 ## 🚀 Features
 - **Persistent Sessions**: Automated session tracking with Supabase.
 - **Elite Analytics**: Daily Stream and Monthly Insight views with high-definition charts.
