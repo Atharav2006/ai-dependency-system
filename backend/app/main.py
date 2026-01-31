@@ -10,12 +10,12 @@ from app.routes import sessions, analytics
 
 app = FastAPI(title="AI Dependency System Backend")
 
-origins = [
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://localhost:8000",
-    "*" 
-]
+# CORS configuration
+allowed_origins_str = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173")
+origins = [origin.strip() for origin in allowed_origins_str.split(",")]
+# Always allow localhost for dev
+if "http://localhost:3000" not in origins: origins.append("http://localhost:3000")
+if "http://localhost:5173" not in origins: origins.append("http://localhost:5173")
 
 app.add_middleware(
     CORSMiddleware,
