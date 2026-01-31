@@ -10,7 +10,19 @@ function ProtectedRoute({ children }) {
     const [user, setUser] = useState(null)
 
     useEffect(() => {
-        checkUser()
+        // Handle OAuth redirect
+        const handleAuthCallback = async () => {
+            const { data, error } = await supabase.auth.getSession()
+            if (error) {
+                console.error('Error getting session:', error)
+            }
+            if (data.session) {
+                setUser(data.session.user)
+            }
+            setLoading(false)
+        }
+
+        handleAuthCallback()
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setUser(session?.user ?? null)
