@@ -10,3 +10,4 @@ gunicorn
 openai
 anthropic
 groq
+python-multipart
