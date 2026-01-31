@@ -2,7 +2,9 @@ name: Deploy Frontend to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+    paths:
+      - 'frontend/**'
   workflow_dispatch:
 
 permissions:
@@ -18,23 +20,18 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install dependencies
+      - name: Install and Build
         run: |
           cd frontend
           npm install
-
-      - name: Build
-        env:
-          VITE_BACKEND_URL: https://ai-dependency-system.onrender.com
-          VITE_SUPABASE_URL: https://ltdmrgpvisfyrxwrwbev.supabase.co
-          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0ZG1yZ3B2aXNmeXJ4d3J3YmV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0OTQzMzksImV4cCI6MjA4NTA3MDMzOX0.JfzxrVUvucpVNyKSjU9OEVE8xKeKNTacN82BZVccnR4
-        run: |
-          cd frontend
           npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

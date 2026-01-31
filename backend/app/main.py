@@ -10,6 +10,14 @@ from app.routes import sessions, analytics
 
 app = FastAPI(title="AI Dependency System Backend")
 
+@app.on_event("startup")
+async def startup_event():
+    print("Backend starting up...")
+    print(f"PORT: {os.getenv('PORT', '8000')}")
+    print(f"ALLOWED_ORIGINS: {os.getenv('ALLOWED_ORIGINS', 'Not set')}")
+    print(f"SUPABASE_URL: {os.getenv('SUPABASE_URL', 'Not set')}")
+
+
 # CORS configuration
 allowed_origins_str = os.getenv("ALLOWED_ORIGINS", "")
 origins = [origin.strip() for origin in allowed_origins_str.split(",") if origin.strip()]

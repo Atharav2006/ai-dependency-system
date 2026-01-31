@@ -4,8 +4,10 @@ A world-class behavioural analysis platform that monitors user interaction dynam
 
 ## 🌐 Live Demo
 **Frontend**: [https://atharav2006.github.io/ai-dependency-system/](https://atharav2006.github.io/ai-dependency-system/)
+**Backend API**: [https://ai-dependency-system-production.up.railway.app/](https://ai-dependency-system-production.up.railway.app/)
 
 ## 🚀 Features
+
 - **Persistent Sessions**: Automated session tracking with Supabase.
 - **Elite Analytics**: Daily Stream and Monthly Insight views with high-definition charts.
 - **Behavioural Scoring**: Advanced rubric-based analysis of user engagement.
