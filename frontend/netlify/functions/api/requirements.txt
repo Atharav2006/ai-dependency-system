@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+supabase
+python-dotenv
+httpx
+pyjwt[crypto]
+cryptography
+google-generativeai
+gunicorn
+openai
+anthropic
+groq
+python-multipart
+mangum
