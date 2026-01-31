@@ -12,9 +12,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the backend code
 COPY backend/ .
 
-# Expose the port (FastAPI default is 8000, Railway provides PORT env var)
-ENV PORT=8000
+# Expose the port (Railway provides PORT env var)
 EXPOSE 8000
 
-# Start the application
-CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "app.main:app", "--bind", "0.0.0.0:8000"]
+# Start the application using a shell to expand the $PORT variable
+CMD ["sh", "-c", "gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:${PORT:-8000}"]
