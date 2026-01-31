@@ -32,3 +32,6 @@ Thumbs.db
 backend/.env
 frontend/.env
 output.txt
+
+# Local Netlify folder
+.netlify
