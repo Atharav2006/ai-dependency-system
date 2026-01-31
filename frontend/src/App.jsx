@@ -44,7 +44,7 @@ function ProtectedRoute({ children }) {
 
 function App() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename="/ai-dependency-system">
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route
