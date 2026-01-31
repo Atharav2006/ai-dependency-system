@@ -1,9 +1,19 @@
+.glass-card {
+    transition: all var(--transition-base);
+}
+
 .dashboard {
     display: grid;
     grid-template-columns: 320px 1fr;
     height: 100vh;
     overflow: hidden;
+    background: var(--color-bg-primary);
+    background-image:
+        radial-gradient(at 0% 0%, rgba(236, 72, 153, 0.03) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.03) 0px, transparent 50%);
+    position: relative;
 }
+
 
 /* Sidebar */
 .sidebar {
@@ -67,8 +77,41 @@
 .session-card.active {
     background: rgba(236, 72, 153, 0.1);
     border-color: var(--color-accent-primary);
-    box-shadow: 0 4px 20px rgba(236, 72, 153, 0.15);
+    box-shadow: 0 4px 20px rgba(236, 72, 153, 0.2), 0 0 20px rgba(236, 72, 153, 0.1);
 }
+
+
+/* HUD Header Styles */
+.header-hud {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.hud-metric {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-family: 'Inter', monospace;
+    letter-spacing: 1px;
+    color: var(--color-text-secondary);
+}
+
+.system-sync-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+    color: #10b981;
+    margin-top: 0.2rem;
+    letter-spacing: 0.5px;
+}
+
 
 .session-card.glass-card.nav-highlight {
     border: 1px solid rgba(236, 72, 153, 0.3) !important;

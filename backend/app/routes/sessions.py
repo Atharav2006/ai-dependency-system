@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
 # Using absolute imports based on execution from 'backend' folder
@@ -13,7 +13,7 @@ class MessageRequest(BaseModel):
     role: str  # user or assistant
 
 @router.post("/start")
-async def start_session(user: Dict[str, Any] = Depends(get_current_user)):
+async def start_session(background_tasks: BackgroundTasks, user: Dict[str, Any] = Depends(get_current_user)):
     user_id = user.get("sub")
     email = user.get("email")
     token = user.get("access_token")
@@ -50,11 +50,8 @@ async def start_session(user: Dict[str, Any] = Depends(get_current_user)):
                 old_id = s["id"]
                 # Mark as ended
                 supabase.table("sessions").update({"status": "ended"}).eq("id", old_id).execute()
-                # Run analysis (background task would be better, but keeping it simple as per plan)
-                try:
-                    await dependency_service.analyze_session(old_id, token)
-                except Exception as e:
-                    print(f"Auto-analysis failed for {old_id}: {e}")
+                # Run analysis in background
+                background_tasks.add_task(dependency_service.analyze_session, old_id, token)
 
         # Create session
         new_session = {"user_id": user_id, "status": "started"}
@@ -153,7 +150,7 @@ async def add_message(session_id: str, request: MessageRequest, user: Dict[str, 
         raise HTTPException(status_code=500, detail=f"{str(e)}")
 
 @router.post("/{session_id}/end")
-async def end_session(session_id: str, user: Dict[str, Any] = Depends(get_current_user)):
+async def end_session(session_id: str, background_tasks: BackgroundTasks, user: Dict[str, Any] = Depends(get_current_user)):
     user_id = user.get("sub")
     token = user.get("access_token")
 
@@ -171,16 +168,13 @@ async def end_session(session_id: str, user: Dict[str, Any] = Depends(get_curren
 
         # Update status
         res = supabase.table("sessions").update({"status": "ended"}).eq("id", session_id).execute()
-        
+
         # Trigger Analysis
-        analysis_result = None
         try:
             from app.utils.dependency_service import get_dependency_service
             dependency_service = get_dependency_service()
-            # Run analysis asynchronously or await it? 
-            # For MVP, await it so we return metrics immediately
-            # In production, this should be a background task
-            analysis_result = await dependency_service.analyze_session(session_id, token)
+            # Run analysis in background
+            background_tasks.add_task(dependency_service.analyze_session, session_id, token)
         except Exception as analysis_error:
             print(f"Analysis failed: {analysis_error}")
             # Don't fail the end_session call, just log it
@@ -188,7 +182,7 @@ async def end_session(session_id: str, user: Dict[str, Any] = Depends(get_curren
         return {
             "status": "ended", 
             "data": res.data,
-            "analysis": analysis_result
+            "analysis": "pending"
         }
         
     except Exception as e:

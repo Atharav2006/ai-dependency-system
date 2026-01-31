@@ -49,6 +49,8 @@ class DependencyService:
                 "dependency_score": ai_analysis.get("dependency_score", 0),
                 "understanding_score": ai_analysis.get("understanding_score", 0),
                 "capability_score": ai_analysis.get("capability_score", 0),
+                "primary_dependency": ai_analysis.get("primary_dependency_type"),
+                "secondary_dependency": ai_analysis.get("secondary_dependency_type"),
                 "raw_metrics": metrics
             }
             
@@ -99,7 +101,7 @@ class DependencyService:
 
     async def _get_ai_scoring(self, logs: List[Dict], metrics: Dict) -> Dict[str, Any]:
         """
-        Asks Gemini to act as a psychologist/analyst to score the user.
+        Asks Gemini to act as a psychologist/analyst to score the user and identify dependency types.
         """
         conversation_text = ""
         for log in logs:
@@ -107,9 +109,9 @@ class DependencyService:
             conversation_text += f"{role}: {log['message']}\n"
             
         prompt = f"""
-        You are an expert behavioral analyst and evaluator.
+        You are an expert behavioral analyst and psychologist.
 
-        Your task is to analyze the USER'S behavior, NOT the quality of the AI’s replies.
+        Your task is to analyze the USER'S behavior based on their conversation with an AI.
 
         You are given:
         1) The full User–AI conversation transcript
@@ -123,24 +125,28 @@ class DependencyService:
         TRANSCRIPT:
         {conversation_text}
 
-        You MUST strictly follow the scoring rubric below.
-        Every score MUST be justified by observable user behavior.
+        You MUST strictly follow the scoring and classification criteria below.
 
         --------------------------------------------------
-        SCORING DIMENSIONS
+        1. SCORING DIMENSIONS
         --------------------------------------------------
+        - DEPENDENCY SCORE (0–100): Emotional and behavioral reliance.
+        - UNDERSTANDING SCORE (0–100): Comprehension and integration of info.
+        - CAPABILITY SCORE (0–100): Problem-solving and reasoning skill.
 
-        1) DEPENDENCY SCORE (0–100)
-        Measure emotional and behavioral reliance on the AI.
-        0–20  = Independent | 21–40 = Low | 41–60 = Moderate | 61–80 = High | 81–100 = Severe
+        --------------------------------------------------
+        2. DEPENDENCY TYPE CLASSIFICATION
+        --------------------------------------------------
+        Identify the primary and (optionally) secondary type of dependency shown:
 
-        2) UNDERSTANDING SCORE (0–100)
-        Measure how well the user comprehends and integrates information.
-        0-20 = None | 41-60 = Basic | 81-100 = Deep
+        - FUNCTIONAL: Dependency for work, coding, writing, or task execution.
+        - COGNITIVE: Dependency for thinking, learning, understanding, or problem-solving.
+        - EMOTIONAL: Dependency for comfort, stress relief, loneliness, or support.
+        - DECISION-MAKING: Dependency for life choices, planning, approvals, or confirmations.
+        - SOCIAL: Treating AI like a friend or replacing human interaction.
 
-        3) CAPABILITY SCORE (0–100)
-        Measure problem-solving ability, autonomy, and reasoning skill.
-        0-20 = Unable | 41-60 = Intermediate | 81-100 = Expert
+        Base your decision ONLY on repeated patterns in the user's messages. 
+        Select ONE PRIMARY type. Select ONE SECONDARY type ONLY if it is clearly visible and distinct.
 
         --------------------------------------------------
         OUTPUT FORMAT (STRICT)
@@ -152,19 +158,18 @@ class DependencyService:
           "dependency_score": <integer 0–100>,
           "dependency_label": "Low | Moderate | High | Severe",
           "understanding_score": <integer 0–100>,
-          "capability_score": <integer 0–100>
+          "capability_score": <integer 0–100>,
+          "primary_dependency_type": "Functional | Cognitive | Emotional | Decision-making | Social",
+          "secondary_dependency_type": "Functional | Cognitive | Emotional | Decision-making | Social | null"
         }}
         """
         
         try:
-            # Clean up indentation in prompt to save tokens/confusion
             import textwrap
             prompt = textwrap.dedent(prompt)
 
-            # Use generic generate_response (assumed thread-safe or synchronous wrapped in thread)
             text = await asyncio.to_thread(self.llm.generate_response, prompt)
             
-            # Clean up markdown if present
             if "```json" in text:
                 text = text.split("```json")[-1].split("```")[0]
             elif "```" in text:
@@ -176,7 +181,9 @@ class DependencyService:
                 "dependency_score": ai_analysis.get("dependency_score", 50),
                 "dependency_label": ai_analysis.get("dependency_label", "Moderate"),
                 "understanding_score": ai_analysis.get("understanding_score", 50),
-                "capability_score": ai_analysis.get("capability_score", 50)
+                "capability_score": ai_analysis.get("capability_score", 50),
+                "primary_dependency_type": ai_analysis.get("primary_dependency_type"),
+                "secondary_dependency_type": ai_analysis.get("secondary_dependency_type")
             }
 
         except Exception as e:
@@ -188,7 +195,9 @@ class DependencyService:
                 "dependency_score": 50,
                 "dependency_label": "Moderate",
                 "understanding_score": 50,
-                "capability_score": 50
+                "capability_score": 50,
+                "primary_dependency_type": "Functional",
+                "secondary_dependency_type": None
             }
 
 _service = None

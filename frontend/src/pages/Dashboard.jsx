@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { api } from '../services/api'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LogOut, Send, Plus, MessageSquare, Sparkles, Activity, BarChart2 } from 'lucide-react'
+import { LogOut, Send, Plus, MessageSquare, Sparkles, Activity, BarChart2, Brain, Heart, Briefcase, Dices, Users, Monitor, Zap } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts'
 import ChatMessage from '../components/ChatMessage'
 import './Dashboard.css'
@@ -191,6 +191,22 @@ export default function Dashboard() {
         }
     }
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    }
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0, opacity: 1,
+            transition: { type: 'spring', stiffness: 100 }
+        }
+    }
+
     return (
         <div className="dashboard">
             {/* Sidebar */}
@@ -199,7 +215,13 @@ export default function Dashboard() {
                     <div className="logo-small">
                         <Sparkles size={24} />
                     </div>
-                    <h2>AI Sessions</h2>
+                    <div>
+                        <h2>SESSION_CORE</h2>
+                        <div className="system-sync-tag">
+                            <Activity size={10} />
+                            <span>SYNC_READY: 99.8%</span>
+                        </div>
+                    </div>
                 </div>
 
                 <button onClick={startNewSession} disabled={loading} className="btn btn-primary btn-full">
@@ -209,13 +231,18 @@ export default function Dashboard() {
 
                 <div className="sessions-list">
                     <Link to="/analytics" className="session-link-wrapper" style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <div className="session-card glass-card nav-highlight" style={{ marginBottom: '1rem', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+                        <motion.div
+                            className="persona-card glass-card highlight-border"
+                            variants={itemVariants}
+                            style={{ marginBottom: '1rem' }}
+                            whileHover={{ scale: 1.05 }}
+                        >
                             <div className="session-info">
                                 <BarChart2 size={16} className="text-primary" />
                                 <span className="session-id">View Analytics</span>
                             </div>
                             <span className="badge badge-success">New</span>
-                        </div>
+                        </motion.div>
                     </Link>
 
                     {loading && sessions.length === 0 ? (
@@ -233,13 +260,9 @@ export default function Dashboard() {
                             {sessions.map((session, index) => (
                                 <motion.div
                                     key={session.id}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{
-                                        type: "spring",
-                                        stiffness: 100,
-                                        delay: index * 0.05
-                                    }}
+                                    variants={itemVariants}
+                                    initial="hidden"
+                                    animate="visible"
                                     className={`session-card glass-card ${currentSession?.id === session.id ? 'active' : ''} interactive`}
                                     onClick={() => {
                                         setCurrentSession(session)
@@ -279,10 +302,10 @@ export default function Dashboard() {
                         <LogOut size={18} />
                     </button>
                 </div>
-            </aside >
+            </aside>
 
             {/* Main Chat Area */}
-            < main className="chat-container" >
+            <main className="chat-container">
                 {
                     currentSession ? (
                         <>
@@ -294,7 +317,16 @@ export default function Dashboard() {
                                             timeStyle: 'short'
                                         })}
                                     </h1>
-                                    <p className="chat-subtitle">Session Details & Behavioral Insights</p>
+                                    <div className="header-hud">
+                                        <div className="hud-metric">
+                                            <Monitor size={12} />
+                                            <span>MODE: ANALYTICAL</span>
+                                        </div>
+                                        <div className="hud-metric">
+                                            <Zap size={12} />
+                                            <span>CORE: {currentSession.status.toUpperCase()}</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <button onClick={endCurrentSession} className="btn btn-secondary">
                                     End Session
@@ -391,6 +423,36 @@ export default function Dashboard() {
                                 </div>
 
                                 <div className="stats-card glass-card">
+                                    <h3>Dependency Focus</h3>
+                                    <div className="dependency-types-list">
+                                        <div className="type-item primary">
+                                            <span className="type-badge">Primary</span>
+                                            <div className="type-content">
+                                                {analysis.primary_dependency === 'Functional' && <Briefcase size={20} className="text-secondary" />}
+                                                {analysis.primary_dependency === 'Cognitive' && <Brain size={20} className="text-secondary" />}
+                                                {analysis.primary_dependency === 'Emotional' && <Heart size={20} className="text-secondary" />}
+                                                {analysis.primary_dependency === 'Decision-making' && <Dices size={20} className="text-secondary" />}
+                                                {analysis.primary_dependency === 'Social' && <Users size={20} className="text-secondary" />}
+                                                <span className="type-name">{analysis.primary_dependency || 'General'}</span>
+                                            </div>
+                                        </div>
+                                        {analysis.secondary_dependency && analysis.secondary_dependency !== 'null' && (
+                                            <div className="type-item secondary">
+                                                <span className="type-badge">Secondary</span>
+                                                <div className="type-content">
+                                                    {analysis.secondary_dependency === 'Functional' && <Briefcase size={16} />}
+                                                    {analysis.secondary_dependency === 'Cognitive' && <Brain size={16} />}
+                                                    {analysis.secondary_dependency === 'Emotional' && <Heart size={16} />}
+                                                    {analysis.secondary_dependency === 'Decision-making' && <Dices size={16} />}
+                                                    {analysis.secondary_dependency === 'Social' && <Users size={16} />}
+                                                    <span className="type-name">{analysis.secondary_dependency}</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="stats-card glass-card">
                                     <h3>Session Stats</h3>
                                     <div className="stats-list">
                                         <div className="stat-item">
@@ -426,7 +488,8 @@ export default function Dashboard() {
                         </div>
                     )
                 }
-            </main >
-        </div >
+            </main>
+
+        </div>
     )
 }

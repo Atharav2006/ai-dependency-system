@@ -15,12 +15,10 @@ class GeminiService:
         
         # Try different model names in order of preference
         model_names = [
-            'gemini-2.5-flash',
-            'models/gemini-2.5-flash',
+            'gemini-flash-latest',
+            'gemini-pro-latest',
             'gemini-1.5-flash',
-            'gemini-1.5-pro',
-            'models/gemini-1.5-flash', 
-            'gemini-pro',
+            'gemini-2.0-flash',
         ]
         
         self.model = None
@@ -89,11 +87,10 @@ class GeminiService:
             # Since I can't refactor __init__ easily in one go without replacing the whole file, 
             # I'll just hardcode the fallback list here for safety, prioritized by cost/speed
             fallback_models = [
-                'gemini-2.5-flash',
-                'models/gemini-2.5-flash',
+                'gemini-flash-latest',
+                'gemini-pro-latest',
                 'gemini-1.5-flash',
-                'gemini-1.5-pro',
-                'gemini-pro'
+                'gemini-2.0-flash'
             ]
             
             for model_name in fallback_models:
