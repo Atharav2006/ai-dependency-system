@@ -6,3 +6,4 @@ httpx
 pyjwt[crypto]
 cryptography
 google-generativeai
+gunicorn
