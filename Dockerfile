@@ -15,6 +15,7 @@ COPY frontend/ ./
 # Pass environment variables at build time
 ENV VITE_SUPABASE_URL=https://ltdmrgpvisfyrxwrwbev.supabase.co
 ENV VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0ZG1yZ3B2aXNmeXJ4d3J3YmV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0OTQzMzksImV4cCI6MjA4NTA3MDMzOX0.JfzxrVUvucpVNyKSjU9OEVE8xKeKNTacN82BZVccnR4
+ENV VITE_BACKEND_URL=https://vgsarqvgha.dev.ap-jt.com/api
 
 # Build frontend
 RUN npm run build
