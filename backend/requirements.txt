@@ -8,3 +8,5 @@ cryptography
 google-generativeai
 gunicorn
 openai
+anthropic
+groq
