@@ -1,0 +1,175 @@
+.chat-message {
+    display: flex;
+    gap: var(--spacing-md);
+    max-width: 800px;
+}
+
+.user-message {
+    margin-left: auto;
+    flex-direction: row-reverse;
+}
+
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: white;
+}
+
+.user-message .message-avatar {
+    background: var(--color-accent-gradient);
+}
+
+.assistant-message .message-avatar {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+}
+
+.message-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.user-message .message-content {
+    text-align: right;
+}
+
+.message-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+}
+
+.user-message .message-header {
+    justify-content: flex-end;
+}
+
+.message-role {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.message-time {
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary);
+}
+
+.message-text {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+.user-message .message-text {
+    background: var(--color-accent-gradient);
+    color: white;
+    border-bottom-right-radius: var(--spacing-xs);
+}
+
+.assistant-message .message-text {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-bottom-left-radius: var(--spacing-xs);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.user-message .message-text {
+    background: var(--color-accent-gradient);
+    color: white;
+    border-bottom-right-radius: var(--spacing-xs);
+    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2);
+}
+
+/* Markdown Styles */
+.message-text p {
+    margin: 0;
+}
+
+.message-text p+p {
+    margin-top: 0.75em;
+}
+
+.message-text ul,
+.message-text ol {
+    margin: 0.5em 0;
+    padding-left: 1.5em;
+}
+
+.message-text li+li {
+    margin-top: 0.25em;
+}
+
+.message-text strong {
+    font-weight: 600;
+    color: inherit;
+}
+
+.message-text em {
+    font-style: italic;
+}
+
+.message-text blockquote {
+    border-left: 3px solid var(--color-primary);
+    margin: 0.5em 0;
+    padding-left: 1em;
+    color: var(--color-text-secondary);
+}
+
+/* Code Blocks */
+.message-text code {
+    font-family: 'Fira Code', 'Roboto Mono', monospace;
+    font-size: 0.85em;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.user-message .message-text code {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.message-text pre {
+    background: #f8fafc;
+    color: #334155;
+    padding: 1em;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 0.75em 0;
+    border: 1px solid var(--color-border);
+}
+
+.message-text pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: 0.85em;
+}
+
+/* Headers in chat should be small */
+.message-text h1,
+.message-text h2,
+.message-text h3 {
+    font-size: 1.1em;
+    font-weight: 700;
+    margin: 1em 0 0.5em 0;
+}
+
+.message-text h1:first-child,
+.message-text h2:first-child,
+.message-text h3:first-child {
+    margin-top: 0;
+}
+
+/* Helper wrapper for code blocks to prevent overflow */
+.code-block-wrapper {
+    position: relative;
+    max-width: 100%;
+}
