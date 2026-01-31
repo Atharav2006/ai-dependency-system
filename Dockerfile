@@ -12,6 +12,12 @@ RUN npm install
 # Copy frontend source
 COPY frontend/ ./
 
+# Pass environment variables at build time
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_ANON_KEY
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+
 # Build frontend
 RUN npm run build
 
