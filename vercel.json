@@ -23,8 +23,25 @@
             "destination": "/api/index.py"
         },
         {
-            "source": "/(.*)",
-            "destination": "/frontend/$1"
+            "source": "/dashboard",
+            "destination": "/frontend/index.html"
+        },
+        {
+            "source": "/analytics",
+            "destination": "/frontend/index.html"
+        },
+        {
+            "source": "/login",
+            "destination": "/frontend/index.html"
+        },
+        {
+            "source": "/((?!api/).*)",
+            "destination": "/frontend/$1",
+            "continue": true
+        },
+        {
+            "source": "/((?!api/).*)",
+            "destination": "/frontend/index.html"
         }
     ]
 }
